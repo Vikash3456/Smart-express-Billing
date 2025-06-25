@@ -1,0 +1,320 @@
+z<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Express Billing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Landing Page -->
+        <div id="landing" class="page active">
+            <div class="hero">
+                <div class="logo">⚡</div>
+                <h1>Smart Express Billing</h1>
+                <p>Skip the Queue • Click & Pay • Walk Away</p>
+                <div class="tagline">A Game Changer for Crowded Malls</div>
+                <button class="btn" onclick="goToPage('upload')">
+                    <i class="fas fa-shopping-cart"></i> Start Shopping
+                </button>
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon"><i class="fas fa-camera"></i></div>
+                    <h3>Quick Capture</h3>
+                    <p>Simply click a photo of the product and barcode</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>Instant Processing</h3>
+                    <p>Get your bill generated instantly with smart recognition</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon"><i class="fas fa-credit-card"></i></div>
+                    <h3>Secure Payment</h3>
+                    <p>Pay online securely and skip the checkout queue</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                    <h3>Lightning Fast</h3>
+                    <p>Complete your purchase in under 60 seconds</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Page -->
+        <div id="upload" class="page">
+            <div class="upload-container">
+                <div class="step-indicator">
+                    <div class="step active">
+                        <div class="step-number">1</div>
+                        <span>Capture</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <span>Review</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <span>Pay</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <span>Done</span>
+                    </div>
+                </div>
+
+                <div class="upload-section">
+                    <h2>Capture Product & Barcode</h2>
+                    <p>Take a clear photo of the product with visible barcode/QR code</p>
+                    
+                    <div class="camera-input">
+                        <button class="camera-btn">
+                            <i class="fas fa-camera"></i>
+                            Take Photo
+                        </button>
+                        <input type="file" id="imageInput" accept="image/*" capture="camera">
+                    </div>
+                    
+                    <div class="preview-container" id="previewContainer">
+                        <h3>Preview:</h3>
+                        <img id="previewImage" class="preview-image" alt="Preview">
+                        <div class="loading" id="scanningLoader">
+                            <div class="spinner"></div>
+                            <p>Scanning barcode...</p>
+                        </div>
+                        <div id="scanResult"></div>
+                    </div>
+                </div>
+
+                <div class="whatsapp-section">
+                    <h3><i class="fab fa-whatsapp" style="color: #25D366;"></i> WhatsApp Details</h3>
+                    <p>We'll send your digital receipt via WhatsApp</p>
+                    
+                    <div class="input-group">
+                        <label for="whatsappNumber">WhatsApp Number:</label>
+                        <input type="tel" id="whatsappNumber" placeholder="+91 9876543210" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="customerName">Your Name:</label>
+                        <input type="text" id="customerName" placeholder="Enter your name" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="goToPage('landing')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn" onclick="processUpload()" id="nextBtn" disabled>
+                    Next <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Page -->
+        <div id="summary" class="page">
+            <div class="summary-container">
+                <div class="step-indicator">
+                    <div class="step">
+                        <div class="step-number">✓</div>
+                        <span>Capture</span>
+                    </div>
+                    <div class="step active">
+                        <div class="step-number">2</div>
+                        <span>Review</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <span>Pay</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <span>Done</span>
+                    </div>
+                </div>
+
+                <h2>Order Summary</h2>
+                
+                <div class="product-card" id="productCard">
+                    <div class="product-info">
+                        <img id="productImage" class="product-image" alt="Product">
+                        <div>
+                            <h3 id="productName">Product Name</h3>
+                            <p id="productBarcode">Barcode: </p>
+                            <p id="productCategory">Category: </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <h3 id="productPrice">₹0.00</h3>
+                            <p>Qty: <span id="productQty">1</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bill-summary">
+                    <h3>Bill Summary</h3>
+                    <div class="bill-row">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">₹0.00</span>
+                    </div>
+                    <div class="bill-row">
+                        <span>Tax (18% GST):</span>
+                        <span id="tax">₹0.00</span>
+                    </div>
+                    <div class="bill-row">
+                        <span>Express Service Fee:</span>
+                        <span id="serviceFee">₹5.00</span>
+                    </div>
+                    <div class="bill-row bill-total">
+                        <span>Total Amount:</span>
+                        <span id="totalAmount">₹0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="goToPage('upload')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn" onclick="goToPage('payment')">
+                    Proceed to Pay <i class="fas fa-credit-card"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Payment Page -->
+        <div id="payment" class="page">
+            <div class="payment-container">
+                <div class="step-indicator">
+                    <div class="step">
+                        <div class="step-number">✓</div>
+                        <span>Capture</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">✓</div>
+                        <span>Review</span>
+                    </div>
+                    <div class="step active">
+                        <div class="step-number">3</div>
+                        <span>Pay</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <span>Done</span>
+                    </div>
+                </div>
+
+                <h2>Payment</h2>
+                <p>Total Amount: <strong id="paymentTotal">₹0.00</strong></p>
+
+                <div class="payment-methods">
+                    <div class="payment-method selected" data-method="card">
+                        <i class="fas fa-credit-card" style="font-size: 2em; color: #667eea; margin-bottom: 10px;"></i>
+                        <h4>Credit/Debit Card</h4>
+                        <p>Secure payment via Stripe</p>
+                    </div>
+                    <div class="payment-method" data-method="upi">
+                        <i class="fas fa-mobile-alt" style="font-size: 2em; color: #667eea; margin-bottom: 10px;"></i>
+                        <h4>UPI</h4>
+                        <p>Pay with UPI apps</p>
+                    </div>
+                    <div class="payment-method" data-method="wallet">
+                        <i class="fas fa-wallet" style="font-size: 2em; color: #667eea; margin-bottom: 10px;"></i>
+                        <h4>Digital Wallet</h4>
+                        <p>PayTM, PhonePe, etc.</p>
+                    </div>
+                </div>
+
+                <div class="card-form" id="cardForm">
+                    <h3>Card Details</h3>
+                    <div class="input-group">
+                        <label>Card Number:</label>
+                        <input type="text" id="cardNumber" placeholder="4242 4242 4242 4242" maxlength="19">
+                    </div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Cardholder Name:</label>
+                            <input type="text" id="cardName" placeholder="John Doe">
+                        </div>
+                        <div class="input-group">
+                            <label>Expiry:</label>
+                            <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5">
+                        </div>
+                        <div class="input-group">
+                            <label>CVV:</label>
+                            <input type="text" id="cardCvv" placeholder="123" maxlength="3">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="loading" id="paymentLoader">
+                    <div class="spinner"></div>
+                    <p>Processing payment...</p>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="goToPage('summary')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn" onclick="processPayment()" id="payBtn">
+                    <i class="fas fa-lock"></i> Pay Securely
+                </button>
+            </div>
+        </div>
+
+        <!-- Success Page -->
+        <div id="success" class="page">
+            <div class="success-container">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                
+                <h1>Payment Successful!</h1>
+                <p>Your order has been processed successfully</p>
+                
+                <div class="bill-summary" style="max-width: 400px; margin: 30px auto;">
+                    <h3>Transaction Details</h3>
+                    <div class="bill-row">
+                        <span>Transaction ID:</span>
+                        <span id="transactionId">TXN123456789</span>
+                    </div>
+                    <div class="bill-row">
+                        <span>Amount Paid:</span>
+                        <span id="paidAmount">₹0.00</span>
+                    </div>
+                    <div class="bill-row">
+                        <span>Payment Method:</span>
+                        <span id="paymentMethod">Credit Card</span>
+                    </div>
+                    <div class="bill-row">
+                        <span>Date & Time:</span>
+                        <span id="paymentTime"></span>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-whatsapp" onclick="sendWhatsApp()">
+                        <i class="fab fa-whatsapp"></i> Send to WhatsApp
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadBill()">
+                        <i class="fas fa-download"></i> Download Bill
+                    </button>
+                    <button class="btn" onclick="goToPage('landing')">
+                        <i class="fas fa-home"></i> New Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
